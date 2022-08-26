@@ -1,363 +1,248 @@
-#include<stdio.h>
-
-#include<conio.h>
-
-#include<string.h>
-
-#include<process.h>
-
-#include<stdlib.h>
-
-#include<dos.h>
-
-struct contact
-
+include<bits/stdc++.h>
+ 
+using namespace std;
+ 
+class contact
 {
-
-    long ph;
-
+	long ph;
     char name[20],add[20],email[30];
-
-} list;
-
-char query[20],name[20];
-
-FILE *fp, *ft;
-
-int i,n,ch,l,found;
-
-int main()
-
+	
+	public:
+ 
+	void create_contact()
+	{
+            cout<<"Phone: ";
+            cin>>ph;
+            
+            cout<<"Name: ";
+            cin.ignore();
+            cin>>name;
+            
+			cout<<"Address: ";
+            cin.ignore();
+            cin>>add;
+ 
+            cout<<"Email address: ";
+            cin.ignore();
+            cin>>email;
+ 
+            cout<<"\n";
+	}
+	
+	void show_contact()
+	{
+		cout<<endl<<"Phone #: "<<ph;
+		cout<<endl<<"Name: "<<name;
+		cout<<endl<<"Address: "<<add;
+		cout<<endl<<"Email Address : "<<email;
+	}
+	
+	long getPhone()
+	{
+		return ph;
+	}
+	
+	char* getName()
+	{
+		return name;
+	}
+	
+	char* getAddress()
+	{
+		return add;
+	}
+	
+	char* getEmail()
+	{
+		return email;
+	}
+}; 
+ 
+ 
+fstream fp;
+contact cont;
+ 
+void save_contact()
 {
-
-main:
-
-    system("cls");    /* ************Main menu ***********************  */
-
-    printf("\n\t **** Welcome to Contact Management System ****");
-
-    printf("\n\n\n\t\t\tMAIN MENU\n\t\t=====================\n\t\t[1] Add a new Contact\n\t\t[2] List all Contacts\n\t\t[3] Search for contact\n\t\t[4] Edit a Contact\n\t\t[5] Delete a Contact\n\t\t[0] Exit\n\t\t=================\n\t\t");
-
-    printf("Enter the choice:");
-
-    scanf("%d",&ch);
-
+	fp.open("contactBook.dat",ios::out|ios::app);
+	cont.create_contact();
+	fp.write((char*)&cont,sizeof(contact));
+	fp.close();
+	cout<<endl<<endl<<"Contact Has Been Sucessfully Created...";
+	getchar();
+}
+ 
+void show_all_contacts()
+{
+	system("cls");
+	 cout<<"\n\t\t================================\n\t\t\tLIST OF CONTACTS\n\t\t================================\n";
+	fp.open("contactBook.dat",ios::in);
+	while(fp.read((char*)&cont,sizeof(contact)))
+	{
+		cont.show_contact();
+		cout<<endl<<"=================================================\n"<<endl;
+	}
+	fp.close();
+}
+ 
+ 
+void display_contact(int num)
+{
+	bool found;
+	int ch;
+ 
+		 found=false;
+	fp.open("contactBook.dat",ios::in);
+	while(fp.read((char*)&cont,sizeof(contact)))
+	{
+		if(cont.getPhone()==num)
+		{
+			system("cls");
+			cont.show_contact();
+			found=true;
+		}
+	}
+	
+	fp.close();
+	if(found == false){
+	cout<<"\n\nNo record found...";}
+	
+	    
+	getchar();
+}
+ 
+ 
+void edit_contact()
+{
+	int num;
+	bool found=false;
+	system("cls");
+	cout<<"..::Edit contact\n===============================\n\n\t..::Enter the number of contact to edit:";
+    cin>>num;
+	
+	fp.open("contactBook.dat",ios::in|ios::out);
+	while(fp.read((char*)&cont,sizeof(contact)) && found==false)
+	{
+		if(cont.getPhone()==num)
+		{
+			cont.show_contact();
+            cout<<"\nPlease Enter The New Details of Contact: "<<endl;
+			cont.create_contact();
+			int pos=-1*sizeof(cont);
+			fp.seekp(pos,ios::cur);
+			fp.write((char*)&cont,sizeof(cont));
+			cout<<endl<<endl<<"\t Contact Successfully Updated...";
+			found=true;
+		}
+	}
+	fp.close();
+	if(found==false)
+		cout<<endl<<endl<<"Contact Not Found...";
+ 
+ 
+}
+ 
+ 
+void delete_contact()
+{
+	int num;
+	system("cls");
+	cout<<endl<<endl<<"Please Enter The contact #: ";
+	cin>>num;
+	fp.open("contactBook.dat",ios::in|ios::out);
+	fstream fp2;
+	fp2.open("Temp.dat",ios::out);
+	fp.seekg(0,ios::beg);
+	while(fp.read((char*)&cont,sizeof(contact)))
+	{
+		if(cont.getPhone()!=num)
+		{
+			fp2.write((char*)&cont,sizeof(contact));
+		}
+	}
+	fp2.close();
+	fp.close();
+	remove("contactBook.dat");
+	rename("Temp.dat","contactBook.dat");
+	cout<<endl<<endl<<"\tContact Deleted...";
+}
+ 
+ 
+int main(int argc, char *argv[])
+{
+		system("cls");
+	system("color 03");
+  	cout<<"\t\t\t\t*\t*";
+  	cout<<"\t\t\t\t**\t**";
+   	cout<<"\t\t\t\t***\t***";
+   	cout<<"\t\t\t\t****\t****";
+   	cout<<"\t\t\t\t*****\t*****";
+    cout<<"\t\t\t\t******\t******";
+   	cout<<"\t\t\t\t*******\t*******";
+   	cout<<"\t\t\t\t*******\t*******";
+   	cout<<"\t\t\t\t******\t******";
+   	cout<<"\t\t\t\t*****\t*****";
+   	cout<<"\t\t\t\t****\t****";
+   	cout<<"\t\t\t\t***\t***";
+   	cout<<"\t\t\t\t**\t**";
+   	cout<<"\t\t\t\t*\t*";
+	
+    for(;;)
+    {
+		    int ch;
+    cout<<"\n\t **** Welcome to Contact Management System ****";
+    cout<<"\n\n\n\t\t\tMAIN MENU\n\t\t=====================\n\t\t[1] Add a new Contact\n\t\t[2] List all Contacts\n\t\t[3] Search for contact\n\t\t[4] Edit a Contact\n\t\t[5] Delete a Contact\n\t\t[0] Exit\n\t\t=================\n\t\t";
+    cout<<"Enter the choice:";
+ 
+    cin>>ch;
+ 
     switch(ch)
-
     {
-
-    case 0:
-
-        printf("\n\n\t\tAre you sure you want to exit?");
-
+    	case 0: cout<<"\n\n\t\tThank you for using CMS...";
+    		exit(0);
+    			break;
         break;
-
-        /* *********************Add new contacts************  */
-
-    case 1:
-
-        system("cls");
-
-        fp=fopen("contact.dll","a");
-
-        for (;;)
-
-        {
-            fflush(stdin);
-
-            printf("To exit enter blank space in the name input\nName (Use identical):");
-
-            scanf("%[^\n]",&list.name);
-
-            if(stricmp(list.name,"")==0 || stricmp(list.name," ")==0)
-
-                break;
-
-            fflush(stdin);
-
-            printf("Phone:");
-
-            scanf("%ld",&list.ph);
-
-            fflush(stdin);
-
-            printf("address:");
-
-            scanf("%[^\n]",&list.add);
-
-            fflush(stdin);
-
-            printf("email address:");
-
-            gets(list.email);
-
-            printf("\n");
-
-            fwrite(&list,sizeof(list),1,fp);
-
-        }
-
-        fclose(fp);
-
-        break;
-
-        /* *********************list of contacts*************************  */
-
-    case 2:
-
-        system("cls");
-
-        printf("\n\t\t================================\n\t\t\tLIST OF CONTACTS\n\t\t================================\n\nName\t\tPhone No\t    Address\t\tE-mail ad.\n=================================================================\n\n");
-
-        for(i=97; i<=122; i=i+1)
-
-        {
-
-            fp=fopen("contact.dll","r");
-
-            fflush(stdin);
-
-            found=0;
-
-            while(fread(&list,sizeof(list),1,fp)==1)
-
-            {
-
-                if(list.name[0]==i || list.name[0]==i-32)
-
-                {
-
-                    printf("\nName\t: %s\nPhone\t: %ld\nAddress\t: %s\nEmail\t: %s\n",list.name,
-
-                           list.ph,list.add,list.email);
-
-                    found++;
-
-                }
-
-            }
-
-            if(found!=0)
-
-            {
-                printf("=========================================================== [%c]-(%d)\n\n",i-32,found);
-
-                getch();
-            }
-
-            fclose(fp);
-
-        }
-
-        break;
-
-        /* *******************search contacts**********************  */
-
-    case 3:
-
-        system("cls");
-
-        do
-
-        {
-
-            found=0;
-
-            printf("\n\n\t..::CONTACT SEARCH\n\t===========================\n\t..::Name of contact to search: ");
-
-            fflush(stdin);
-
-            scanf("%[^\n]",&query);
-
-            l=strlen(query);
-
-            fp=fopen("contact.dll","r");
-
+    	     break;
+    	case 1:save_contact();
+    		break;
+    	case 2:show_all_contacts();
+    		break;
+   		case 3:
+		    int num;
             system("cls");
-
-            printf("\n\n..::Search result for '%s' \n===================================================\n",query);
-
-            while(fread(&list,sizeof(list),1,fp)==1)
-
-            {
-
-                for(i=0; i<=l; i++)
-
-                    name[i]=list.name[i];
-
-                name[l]='\0';
-
-                if(stricmp(name,query)==0)
-
-                {
-
-                    printf("\n..::Name\t: %s\n..::Phone\t: %ld\n..::Address\t: %s\n..::Email\t: %s\n",list.name,list.ph,list.add,list.email);
-
-                    found++;
-
-                    if (found%4==0)
-
-                    {
-
-                        printf("..::Press any key to continue...");
-
-                        getch();
-
-                    }
-
-                }
-
-            }
-
-            if(found==0)
-
-                printf("\n..::No match found!");
-
-            else
-
-                printf("\n..::%d match(s) found!",found);
-
-            fclose(fp);
-
-            printf("\n ..::Try again?\n\n\t[1] Yes\t\t[0] No\n\t");
-
-            scanf("%d",&ch);
-
-        }
-        while(ch==1);
-
-        break;
-
-        /* *********************edit contacts************************/
-
-    case 4:
-
-        system("cls");
-
-        fp=fopen("contact.dll","r");
-
-        ft=fopen("temp.dat","w");
-
-        fflush(stdin);
-
-        printf("..::Edit contact\n===============================\n\n\t..::Enter the name of contact to edit:");
-
-        scanf("%[^\n]",name);
-
-        while(fread(&list,sizeof(list),1,fp)==1)
-
-        {
-
-            if(stricmp(name,list.name)!=0)
-
-                fwrite(&list,sizeof(list),1,ft);
-
-        }
-
-        fflush(stdin);
-
-        printf("\n\n..::Editing '%s'\n\n",name);
-
-        printf("..::Name(Use identical):");
-
-        scanf("%[^\n]",&list.name);
-
-        fflush(stdin);
-
-        printf("..::Phone:");
-
-        scanf("%ld",&list.ph);
-
-        fflush(stdin);
-
-        printf("..::address:");
-
-        scanf("%[^\n]",&list.add);
-
-        fflush(stdin);
-
-        printf("..::email address:");
-
-        gets(list.email);
-
-        printf("\n");
-
-        fwrite(&list,sizeof(list),1,ft);
-
-        fclose(fp);
-
-        fclose(ft);
-
-        remove("contact.dll");
-
-        rename("temp.dat","contact.dll");
-
-        break;
-
-        /* ********************delete contacts**********************/
-
-    case 5:
-
-        system("cls");
-
-        fflush(stdin);
-
-        printf("\n\n\t..::DELETE A CONTACT\n\t==========================\n\t..::Enter the name of contact to delete:");
-
-        scanf("%[^\n]",&name);
-
-        fp=fopen("contact.dll","r");
-
-        ft=fopen("temp.dat","w");
-
-        while(fread(&list,sizeof(list),1,fp)!=0)
-
-            if (stricmp(name,list.name)!=0)
-
-                fwrite(&list,sizeof(list),1,ft);
-
-        fclose(fp);
-
-        fclose(ft);
-
-        remove("contact.dll");
-
-        rename("temp.dat","contact.dll");
-
-        break;
-
-    default:
-
-        printf("Invalid choice");
-
-        break;
-
+            cout<<"\n\n\tPhone: ";
+            cin>>num;
+			display_contact(num);
+    		break;
+    	case 4:edit_contact();
+    		break;
+    	case 5:delete_contact();
+    		break;
+    	default:
+    		break;
     }
-
-    printf("\n\n\n..::Enter the Choice:\n\n\t[1] Main Menu\t\t[0] Exit\n");
-
-    scanf("%d",&ch);
-
-    switch (ch)
-
+    
+    
+    
+ 
+	int opt;
+   cout<<"\n\n\n..::Enter the Choice:\n\n\t[1] Main Menu\t\t[0] Exit\n";
+ 
+   cin>>opt;
+ 
+    switch (opt)
+ 
     {
-
+ 
     case 1:
-
-        goto main;
-
+		system("cls");
+        continue;
+ 
     case 0:
-
-        break;
-
-    default:
-
-        printf("Invalid choice");
-
-        break;
-
-    }
-
-    return 0;
-
+ 
+       exit(0);
+ 
+}
+	}
+	return 0;
 }
