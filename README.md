@@ -1,3 +1,3 @@
-# Contact-Managment-System-using-C
+# Contact-Managment-System
 
-Contact Managment is a mini project done in Programming language C . 
+Contact Managment is a mini project done in Programming language C++ . 
